@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  jenkins:
+    image: noeyhjun/jenkins:0.1
+    ports:
+      - "51000:8080"
+    links:
+      - mariadb
+      - redis
+      - nodejs
+    container_name: jenkins
+    volumes:
+      - /root/.ssh:/root/.ssh
+
+  mariadb:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=guswns12
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    container_name: db
+
+  redis:
+    image: redis
+    command: redis-server --requirepass guswns12
+    ports:
+      - "6379:6379"
+    container_name: redis
+
+  nodejs:
+    image: noeyhjun/nodejs:0.1
+    ports:
+      - "3000:3000"
+      - "52000:22"
+    links:
+      - mariadb
+      - redis
+    container_name: nodejs
